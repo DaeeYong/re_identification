@@ -18,7 +18,7 @@ input_video_path = '/media/yong/SAMSUNG1/video/pp009/fast_rear.mp4'
 output_roi_path = './output/pp09_roi2.json'
 
 #그대로 사용하는 것을 추천
-tracking_num = 3
+tracking_num = 2
 
 ##################################################################
 

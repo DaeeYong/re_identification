@@ -20,7 +20,10 @@ json_folder_path = '/media/yong/SAMSUNG1/json/pp009/pp009_omc_walk_fast_rear.mp4
 
 re_target_output_path = './output/re_target_2.json'
 
-SAVE = False
+SAVE_RETARGET = False
+SAVE_VIDEO = False
+output_video_path = './output.mp4'
+
 VIDEO_SPEED = 50 #ms
 ######################################################################################
 
@@ -31,11 +34,22 @@ pos = dragonV.from_jsonfolder_to_list(json_folder_path)
 
 # 재분류된 Joint Position 저장을 위한 딕셔너리
 reclassified_joint_positions = {}
-
 # 비디오 파일 열기
 input_video_path = video_path  # 입력 비디오 경로
 
 cap = cv2.VideoCapture(input_video_path)
+
+
+frame_width = None
+frame_height = None
+out = None
+
+if SAVE_VIDEO == True:
+    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps = int(cap.get(cv2.CAP_PROP_FPS))
+
+    out = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (frame_width, frame_height))
 
 frame_number = 0
 
@@ -95,6 +109,8 @@ while cap.isOpened():
             cv2.putText(frame, f"Person {person_id}", (x1, y1 - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
 
+    if SAVE_VIDEO == True:
+        out.write(frame)
     # 프레임을 화면에 표시
     cv2.imshow('Video', frame)
 
@@ -104,9 +120,14 @@ while cap.isOpened():
     frame_number += 1
 
 cap.release()
+
+if SAVE_VIDEO == True:
+    out.release()
+
 cv2.destroyAllWindows()
 
-if SAVE == True:
+
+if SAVE_RETARGET == True:
     # 재분류된 Joint Position을 JSON 파일로 저장
     with open(re_target_output_path, 'w') as outfile:
         json.dump(reclassified_joint_positions, outfile, indent=4)
