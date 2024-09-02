@@ -88,8 +88,8 @@ while cap.isOpened():
                 for i in range(0, len(joint_data), 2):
                     x = int(joint_data[i])
                     y = int(joint_data[i + 1])
-
-                    # 관절이 조정된 바운딩 박스 내에 있는지 확인
+                    
+                    #Joint가 ROI 내부에 있는지 확인
                     if x1 < x < x2 and y1 < y < y2:
                         person_joint_positions.extend([x, y])
                         has_joint_inside = True
@@ -111,7 +111,7 @@ while cap.isOpened():
 
     if SAVE_VIDEO == True:
         out.write(frame)
-    # 프레임을 화면에 표시
+    
     cv2.imshow('Video', frame)
 
     if cv2.waitKey(VIDEO_SPEED) & 0xFF == ord('q'):
@@ -128,7 +128,6 @@ cv2.destroyAllWindows()
 
 
 if SAVE_RETARGET == True:
-    # 재분류된 Joint Position을 JSON 파일로 저장
     with open(re_target_output_path, 'w') as outfile:
         json.dump(reclassified_joint_positions, outfile, indent=4)
 
